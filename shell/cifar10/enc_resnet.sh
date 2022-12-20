@@ -7,11 +7,11 @@ export freeze_pattern=True
 export warmup_epochs=0
 
 # model           train_e |eval_e |save_e
-set1=('resnet18'  50      2       10)
-set2=('resnet34'  50      2       10)
-set3=('resnet50'  50      2       10)
-set4=('resnet101' 50      2       10)
-set5=('resnet152' 50      2       10)
+set1=('resnet18'  20      5       5)
+set2=('resnet34'  20      5       5)
+set3=('resnet50'  20      5       5)
+set4=('resnet101' 20      5       5)
+set5=('resnet152' 20      5       5)
 
 pairs=(set1 set2 set3 set4 set5)
 # pairs=(set4 set5)
