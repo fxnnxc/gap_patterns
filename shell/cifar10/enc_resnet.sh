@@ -3,6 +3,7 @@
 export data='cifar10'
 export seed=0 
 export renew_last_layer=True
+export freeze_pattern=True
 
 
 # model           train_e |eval_e |save_e
@@ -12,8 +13,8 @@ set3=('resnet50'  10      5       10)
 set4=('resnet101' 10      5       10)
 set5=('resnet152' 10      5       10)
 
-# pairs=(set1 set2 set3 set4 set5)
-pairs=(set4 set5)
+pairs=(set1 set2 set3 set4 set5)
+# pairs=(set4 set5)
 
 for p in  ${pairs[@]}
 do 
@@ -32,6 +33,7 @@ do
         --eval-freq $eval_freq \
         --save-freq $save_freq \
         --renew-last-layer $renew_last_layer \
+        --freeze-pattern $freeze_pattern \
         --seed $seed
 
 done

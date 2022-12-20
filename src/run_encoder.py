@@ -21,6 +21,7 @@ import time
 import torch 
 import argparse
 from distutils.util import strtobool
+import datetime 
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data" ,type=str)
@@ -67,7 +68,9 @@ encoder.to(flags.device)
 # -- build objects --
 model_optimizer = torch.optim.Adam(encoder.parameters(), lr=flags.encoder_lr)
 model_lr_scheduler = None 
-run_name = f"runs/encoder_train/{flags.data}/{flags.encoder_name}"
+
+date = datetime.datetime.now().strftime("%m%d-%H%M%S")
+run_name = f"runs/encoder_train/{flags.data}/{flags.encoder_name}/{date}"
 
 writer = SummaryWriter(run_name)
 writer.add_text(
@@ -95,7 +98,11 @@ for epoch in range(flags.epochs):
     flags.vars.running_loss = 0 
     encoder.train()
     if flags.freeze_pattern:
-        pass 
+        for param in encoder.parameters():
+            param.requires_grad = False
+        for param in encoder.fc.parameters():
+            param.requires_grad = True            
+    
     for x,y in pbar:
         x,y = x.to(flags.device), y.to(flags.device)
         y_hat = encoder(x)        
@@ -108,7 +115,7 @@ for epoch in range(flags.epochs):
         flags.vars.running_loss += loss.item()
             
         duration = time.strftime("%H:%M:%S", time.gmtime(time.time()-flags.start_time))    
-        writer.add_scalar("train/running_loss", flags.vars.running_loss/flags.vars.sample_count, epoch*len(train_dl)+flags.vars.sample_count)
+        writer.add_scalar("train/running_loss", loss.item(), epoch*len(train_dl)+flags.vars.sample_count)
         pbar.set_description(f"🚀 [INFO {run_name} Train : E:({flags.vars.epoch/flags.epochs:.2f}) D:({duration})]"+ \
                                 f"| Loss {flags.vars.running_loss/flags.vars.sample_count:.6E}")    
     
