@@ -3,6 +3,6 @@
 
 
 ```bash
-bash shell/cifar10/resnet.sh
+bash shell/cifar10/enc_resnet.sh
 
 ```
