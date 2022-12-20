@@ -32,6 +32,7 @@ parser.add_argument("--eval-freq", type=int,)
 parser.add_argument("--save-freq", type=int,)
 parser.add_argument("--seed", type=int)
 parser.add_argument("--renew-last-layer", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True)
+parser.add_argument("--freeze-pattern", type=lambda x: bool(strtobool(x)), default=False, nargs="?", const=True)
 
 args = parser.parse_args()
 
@@ -73,7 +74,6 @@ writer.add_text(
     "hyperparameters",
     "|param|value|\n|-|-|\n%s" % ("\n".join([f"|{key}|{value}|" for key, value in vars(args).items()])),
 )
-
 print("--------\n flags")
 for k,v  in flags.items():
     print(k, ":", v)
@@ -94,6 +94,8 @@ for epoch in range(flags.epochs):
     flags.vars.sample_count = 0 
     flags.vars.running_loss = 0 
     encoder.train()
+    if flags.freeze_pattern:
+        pass 
     for x,y in pbar:
         x,y = x.to(flags.device), y.to(flags.device)
         y_hat = encoder(x)        

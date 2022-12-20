@@ -12,7 +12,8 @@ set3=('resnet50'  10      5       10)
 set4=('resnet101' 10      5       10)
 set5=('resnet152' 10      5       10)
 
-pairs=(set1 set2 set3 set4 set5)
+# pairs=(set1 set2 set3 set4 set5)
+pairs=(set4 set5)
 
 for p in  ${pairs[@]}
 do 
