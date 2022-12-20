@@ -22,6 +22,7 @@ import torch
 import argparse
 from distutils.util import strtobool
 import datetime 
+from transformers.optimization import get_cosine_schedule_with_warmup
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data" ,type=str)
@@ -29,6 +30,7 @@ parser.add_argument("--encoder-name" ,type=str)
 parser.add_argument("--run" ,type=str)
 parser.add_argument("--img-size", type=int, default=84)
 parser.add_argument("--epochs", type=int,)
+parser.add_argument("--warmup-epochs", type=int,)
 parser.add_argument("--eval-freq", type=int,)
 parser.add_argument("--save-freq", type=int,)
 parser.add_argument("--seed", type=int)
@@ -67,7 +69,10 @@ encoder.to(flags.device)
 
 # -- build objects --
 model_optimizer = torch.optim.Adam(encoder.parameters(), lr=flags.encoder_lr)
-model_lr_scheduler = None 
+model_lr_scheduler = get_cosine_schedule_with_warmup(
+                model_optimizer, num_warmup_steps=flags.warmup_epochs, 
+                num_training_steps=flags.epochs
+) 
 
 date = datetime.datetime.now().strftime("%m%d-%H%M%S")
 run_name = f"runs/encoder_train/{flags.data}/{flags.encoder_name}/{date}"
@@ -91,8 +96,8 @@ flags.vars.best_accuracy = 0
 
 for epoch in range(flags.epochs):
     flags.vars.epoch = epoch
+    model_lr_scheduler.step()
     # writer.add_scalar("train/lr", lr_scheduler.get_last_lr()[0], epoch)
-    
     pbar = tqdm(train_dl)
     flags.vars.sample_count = 0 
     flags.vars.running_loss = 0 
