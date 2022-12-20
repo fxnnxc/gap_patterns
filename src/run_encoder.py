@@ -60,7 +60,6 @@ train_dl, valid_dl = DataLoader(train_ds, shuffle=True, batch_size=flags.batch_s
 
 encoder =get_encoder(flags)
 
-
 if flags.renew_last_layer:
     del encoder.fc
     print("new layer is added")
@@ -96,7 +95,6 @@ flags.vars.best_accuracy = 0
 
 for epoch in range(flags.epochs):
     flags.vars.epoch = epoch
-    model_lr_scheduler.step()
     # writer.add_scalar("train/lr", lr_scheduler.get_last_lr()[0], epoch)
     pbar = tqdm(train_dl)
     flags.vars.sample_count = 0 
@@ -124,6 +122,7 @@ for epoch in range(flags.epochs):
         pbar.set_description(f"🚀 [INFO {run_name} Train : E:({flags.vars.epoch/flags.epochs:.2f}) D:({duration})]"+ \
                                 f"| Loss {flags.vars.running_loss/flags.vars.sample_count:.6E}")    
     
+    model_lr_scheduler.step()
     if epoch % flags.eval_freq == (flags.eval_freq -1) or epoch==flags.vars.epoch-1:
         encoder.eval()
         pbar = tqdm(valid_dl)

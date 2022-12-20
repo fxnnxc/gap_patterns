@@ -4,7 +4,7 @@ export data='cifar10'
 export seed=0 
 export renew_last_layer=True
 export freeze_pattern=True
-
+export warmup_epochs=0
 
 # model           train_e |eval_e |save_e
 set1=('resnet18'  10      5       10)
@@ -34,6 +34,7 @@ do
         --save-freq $save_freq \
         --renew-last-layer $renew_last_layer \
         --freeze-pattern $freeze_pattern \
+        --warmup-epochs $warmup_epochs \
         --seed $seed
 
 done
