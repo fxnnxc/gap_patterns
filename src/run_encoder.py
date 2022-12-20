@@ -105,7 +105,7 @@ for epoch in range(flags.epochs):
             param.requires_grad = False
         for param in encoder.fc.parameters():
             param.requires_grad = True            
-    
+    writer.add_scalar("train/lr", model_lr_scheduler.get_last_lr()[0], epoch*len(train_dl)+flags.vars.sample_count)
     for x,y in pbar:
         x,y = x.to(flags.device), y.to(flags.device)
         y_hat = encoder(x)        
